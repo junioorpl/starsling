@@ -14,7 +14,7 @@ Get StarSling running in under 5 minutes with Docker!
 ```bash
 git clone <repository-url>
 cd starsling
-cp env.example .env.local
+cp env.docker.example .env.local
 ```
 
 ### 2. Configure GitHub Apps

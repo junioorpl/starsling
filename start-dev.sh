@@ -5,10 +5,11 @@ echo "🚀 Starting StarSling Development Environment..."
 
 # Check if .env.local exists
 if [ ! -f .env.local ]; then
-    echo "⚠️  .env.local not found. Creating from template..."
-    cp env.example .env.local
+    echo "⚠️  .env.local not found. Creating from Docker template..."
+    cp env.docker.example .env.local
     echo "📝 Please update .env.local with your actual values before continuing."
     echo "   Required: GitHub OAuth App credentials, GitHub App credentials, Inngest keys"
+    echo "   See env.docker.example for detailed setup instructions"
     read -p "Press Enter to continue after updating .env.local..."
 fi
 

@@ -42,7 +42,7 @@ git clone <repository-url>
 cd starsling
 
 # Copy environment variables
-cp env.example .env.local
+cp env.docker.example .env.local
 
 # Update .env.local with your credentials
 # Required: GitHub OAuth App, GitHub App, Inngest keys
@@ -235,6 +235,7 @@ npm run lint
 ### Development Environment
 
 The development environment includes:
+
 - **Next.js app** with live reload
 - **PostgreSQL database** with persistent data
 - **Automatic database setup** on first run
