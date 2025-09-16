@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import { Github, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
 
 interface GitHubIntegrationCardProps {
@@ -15,13 +15,13 @@ interface GitHubIntegrationCardProps {
   organizationId: string;
 }
 
-export default function GitHubIntegrationCard({
+const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
   status,
   organizationId,
 }: GitHubIntegrationCardProps) {
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const handleConnect = async () => {
+  const handleConnect = useCallback(async () => {
     setIsConnecting(true);
     try {
       // Redirect to GitHub App OAuth flow
@@ -30,9 +30,9 @@ export default function GitHubIntegrationCard({
       console.error("Error initiating GitHub connection:", error);
       setIsConnecting(false);
     }
-  };
+  }, [organizationId]);
 
-  const handleDisconnect = async () => {
+  const handleDisconnect = useCallback(async () => {
     if (confirm("Are you sure you want to disconnect this integration?")) {
       try {
         const response = await fetch("/api/github/disconnect", {
@@ -53,7 +53,7 @@ export default function GitHubIntegrationCard({
         alert("Failed to disconnect integration");
       }
     }
-  };
+  }, [organizationId]);
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
@@ -187,4 +187,6 @@ export default function GitHubIntegrationCard({
       )}
     </div>
   );
-}
+});
+
+export default GitHubIntegrationCard;
