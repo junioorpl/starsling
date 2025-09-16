@@ -32,6 +32,29 @@ Before running this application, you'll need:
 
 ## Setup Instructions
 
+### Option 1: Docker (Recommended)
+
+The easiest way to get started is with Docker, which includes PostgreSQL and live reload:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd starsling
+
+# Copy environment variables
+cp env.example .env.local
+
+# Update .env.local with your credentials
+# Required: GitHub OAuth App, GitHub App, Inngest keys
+
+# Start development environment
+./start-dev.sh
+# OR
+npm run docker:dev
+```
+
+### Option 2: Local Development
+
 ### 1. Clone and Install Dependencies
 
 ```bash
@@ -168,6 +191,26 @@ The application will be available at `http://localhost:3000`.
 
 ## Development
 
+### Docker Commands
+
+```bash
+# Start development environment
+npm run docker:dev
+# OR
+./start-dev.sh
+
+# Start production environment
+npm run docker:prod
+# OR
+./start-prod.sh
+
+# Stop containers
+npm run docker:down
+
+# Clean up (remove volumes and images)
+npm run docker:clean
+```
+
 ### Database Management
 
 ```bash
@@ -185,6 +228,61 @@ npm run db:migrate
 
 ```bash
 npm run lint
+```
+
+## Docker
+
+### Development Environment
+
+The development environment includes:
+- **Next.js app** with live reload
+- **PostgreSQL database** with persistent data
+- **Automatic database setup** on first run
+
+```bash
+# Quick start
+./start-dev.sh
+
+# Manual start
+docker-compose up --build
+```
+
+### Production Environment
+
+```bash
+# Start production
+./start-prod.sh
+
+# Manual start
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+### Environment Variables
+
+Create `.env.local` for development or `.env.production` for production:
+
+```env
+# Database (Docker)
+POSTGRES_PASSWORD=your-secure-password
+
+# GitHub OAuth App
+GITHUB_CLIENT_ID=your-github-oauth-client-id
+GITHUB_CLIENT_SECRET=your-github-oauth-client-secret
+
+# GitHub App
+GITHUB_APP_ID=your-github-app-id
+GITHUB_APP_CLIENT_ID=your-github-app-client-id
+GITHUB_APP_CLIENT_SECRET=your-github-app-client-secret
+GITHUB_APP_PRIVATE_KEY=your-github-app-private-key
+GITHUB_WEBHOOK_SECRET=your-github-webhook-secret
+
+# Inngest
+INNGEST_EVENT_KEY=your-inngest-event-key
+INNGEST_SIGNING_KEY=your-inngest-signing-key
+
+# Security
+BETTER_AUTH_SECRET=your-secret-key-here
+ENCRYPTION_KEY=your-32-character-encryption-key
 ```
 
 ## Deployment
