@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, memo, useCallback } from "react";
-import { Github, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
+import { useState, memo, useCallback } from 'react';
+import { Github, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
 
 interface GitHubIntegrationCardProps {
   status: {
@@ -27,18 +27,18 @@ const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
       // Redirect to GitHub App OAuth flow
       window.location.href = `/api/github/auth?organizationId=${organizationId}`;
     } catch (error) {
-      console.error("Error initiating GitHub connection:", error);
+      console.error('Error initiating GitHub connection:', error);
       setIsConnecting(false);
     }
   }, [organizationId]);
 
   const handleDisconnect = useCallback(async () => {
-    if (confirm("Are you sure you want to disconnect this integration?")) {
+    if (confirm('Are you sure you want to disconnect this integration?')) {
       try {
-        const response = await fetch("/api/github/disconnect", {
-          method: "POST",
+        const response = await fetch('/api/github/disconnect', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ organizationId }),
         });
@@ -46,11 +46,11 @@ const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
         if (response.ok) {
           window.location.reload();
         } else {
-          alert("Failed to disconnect integration");
+          alert('Failed to disconnect integration');
         }
       } catch (error) {
-        console.error("Error disconnecting GitHub integration:", error);
-        alert("Failed to disconnect integration");
+        console.error('Error disconnecting GitHub integration:', error);
+        alert('Failed to disconnect integration');
       }
     }
   }, [organizationId]);
@@ -117,7 +117,7 @@ const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-gray-900">Events:</h4>
               <div className="flex flex-wrap gap-2">
-                {status.events.map((event) => (
+                {status.events.map(event => (
                   <span
                     key={event}
                     className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"

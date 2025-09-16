@@ -1,16 +1,16 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { db } from "@/lib/db";
-import { integrationInstallations } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { createGitHubApp } from "@/lib/github";
-import GitHubIntegrationCard from "@/components/GitHubIntegrationCard";
-import { PageLayout } from "@/components/layout/PageLayout";
-import { Container } from "@/components/layout/Container";
-import { PageHeader } from "@/components/layout/PageHeader";
-import { AuthGuard } from "@/components/layout/AuthGuard";
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { db } from '@/lib/db';
+import { integrationInstallations } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import { createGitHubApp } from '@/lib/github';
+import GitHubIntegrationCard from '@/components/GitHubIntegrationCard';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { Container } from '@/components/layout/Container';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { AuthGuard } from '@/components/layout/AuthGuard';
 
-export default async function IntegrationsPage() {
+const IntegrationsPage = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -55,10 +55,10 @@ export default async function IntegrationsPage() {
         };
       }
     } catch (error) {
-      console.error("Error verifying GitHub integration:", error);
+      console.error('Error verifying GitHub integration:', error);
       integrationStatus = {
         connected: false,
-        error: "Failed to verify integration",
+        error: 'Failed to verify integration',
       };
     }
   }
@@ -80,4 +80,6 @@ export default async function IntegrationsPage() {
       </Container>
     </PageLayout>
   );
-}
+};
+
+export default IntegrationsPage;

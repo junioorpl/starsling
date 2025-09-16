@@ -1,10 +1,15 @@
-import { PageLayout } from "@/components/layout/PageLayout";
-import { LoginCard } from "@/components/auth/LoginCard";
+import { PageLayout } from '@/components/layout/PageLayout';
+import { LoginCard } from '@/components/auth/LoginCard';
 
-export default function LoginPage() {
+const LoginPage = () => {
   return (
-    <PageLayout background="gradient" className="flex items-center justify-center">
+    <PageLayout
+      background="gradient"
+      className="flex items-center justify-center"
+    >
       <LoginCard />
     </PageLayout>
   );
-}
+};
+
+export default LoginPage;

@@ -1,13 +1,13 @@
-import Link from "next/link";
-import { GitHubSignInButton } from "@/components/auth/GitHubSignInButton";
+import Link from 'next/link';
+import { GitHubSignInButton } from '@/components/auth/GitHubSignInButton';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/Card";
-import { memo } from "react";
+} from '@/components/ui/Card';
+import { memo } from 'react';
 
 interface LoginCardProps {
   title?: string;
@@ -18,11 +18,11 @@ interface LoginCardProps {
 }
 
 export const LoginCard = memo(function LoginCard({
-  title = "Welcome to StarSling",
-  description = "Sign in to access your DevOps automation platform",
+  title = 'Welcome to StarSling',
+  description = 'Sign in to access your DevOps automation platform',
   showBackLink = true,
   showTerms = true,
-  className = "",
+  className = '',
 }: LoginCardProps) {
   return (
     <Card className={`w-full max-w-md ${className}`}>

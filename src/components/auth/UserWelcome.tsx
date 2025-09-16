@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { memo, useMemo } from "react";
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
+import { memo, useMemo } from 'react';
 
 interface UserWelcomeProps {
   userName?: string | null;
@@ -13,10 +13,10 @@ export const UserWelcome = memo(function UserWelcome({
   userName,
   userEmail,
   showSignOut = true,
-  className = "",
+  className = '',
 }: UserWelcomeProps) {
   const displayName = useMemo(
-    () => userName || userEmail || "User",
+    () => userName || userEmail || 'User',
     [userName, userEmail]
   );
 

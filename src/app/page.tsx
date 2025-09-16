@@ -1,12 +1,12 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { PageLayout } from "@/components/layout/PageLayout";
-import { Container } from "@/components/layout/Container";
-import { Hero } from "@/components/layout/Hero";
-import { UserWelcome } from "@/components/auth/UserWelcome";
-import { GitHubSignInButton } from "@/components/auth/GitHubSignInButton";
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { Container } from '@/components/layout/Container';
+import { Hero } from '@/components/layout/Hero';
+import { UserWelcome } from '@/components/auth/UserWelcome';
+import { GitHubSignInButton } from '@/components/auth/GitHubSignInButton';
 
-export default async function Home() {
+const Home = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -35,4 +35,6 @@ export default async function Home() {
       </Container>
     </PageLayout>
   );
-}
+};
+
+export default Home;

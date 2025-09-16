@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { db } from "@/lib/db";
-import { integrationInstallations } from "@/lib/db/schema";
-import { encrypt } from "@/lib/encryption";
-import { createGitHubApp } from "@/lib/github";
-import { inngest } from "@/lib/inngest";
-import { eq } from "drizzle-orm";
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { db } from '@/lib/db';
+import { integrationInstallations } from '@/lib/db/schema';
+import { encrypt } from '@/lib/encryption';
+import { createGitHubApp } from '@/lib/github';
+import { inngest } from '@/lib/inngest';
+import { eq } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   const session = await auth.api.getSession({
@@ -14,39 +14,39 @@ export async function GET(request: NextRequest) {
   });
 
   if (!session) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   const searchParams = request.nextUrl.searchParams;
-  const code = searchParams.get("code");
-  const state = searchParams.get("state");
-  const error = searchParams.get("error");
+  const code = searchParams.get('code');
+  const state = searchParams.get('state');
+  const error = searchParams.get('error');
 
   if (error) {
     return NextResponse.redirect(
-      new URL("/integrations?error=access_denied", request.url)
+      new URL('/integrations?error=access_denied', request.url)
     );
   }
 
   if (!code || !state) {
     return NextResponse.redirect(
-      new URL("/integrations?error=invalid_request", request.url)
+      new URL('/integrations?error=invalid_request', request.url)
     );
   }
 
   try {
     // Decode state
-    const stateData = JSON.parse(Buffer.from(state, "base64").toString());
+    const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
     const { organizationId } = stateData;
 
     // Exchange code for access token
     const tokenResponse = await fetch(
-      "https://github.com/login/oauth/access_token",
+      'https://github.com/login/oauth/access_token',
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           client_id: process.env.GITHUB_APP_CLIENT_ID!,
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     if (tokenData.error) {
       throw new Error(
-        tokenData.error_description || "Failed to exchange code for token"
+        tokenData.error_description || 'Failed to exchange code for token'
       );
     }
 
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
             installationId: installation.id,
             accountId: installation.account?.id,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            accountType: (installation.account as any)?.type || "Organization",
+            accountType: (installation.account as any)?.type || 'Organization',
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             accountLogin: (installation.account as any)?.login,
             permissions: installation.permissions,
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
       // Create new installation
       await db.insert(integrationInstallations).values({
         organizationId,
-        provider: "github",
+        provider: 'github',
         accessToken: encrypt(tokenData.access_token),
         refreshToken: tokenData.refresh_token
           ? encrypt(tokenData.refresh_token)
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
           installationId: installation.id,
           accountId: installation.account?.id,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          accountType: (installation.account as any)?.type || "Organization",
+          accountType: (installation.account as any)?.type || 'Organization',
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           accountLogin: (installation.account as any)?.login,
           permissions: installation.permissions,
@@ -126,25 +126,25 @@ export async function GET(request: NextRequest) {
 
     // Trigger Inngest event
     await inngest.send({
-      name: "github/app.installed",
+      name: 'github/app.installed',
       data: {
         installationId: installation.id,
         accountId: installation.account?.id || 0,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        accountType: (installation.account as any)?.type || "Organization",
+        accountType: (installation.account as any)?.type || 'Organization',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        accountLogin: (installation.account as any)?.login || "",
+        accountLogin: (installation.account as any)?.login || '',
         organizationId,
       },
     });
 
     return NextResponse.redirect(
-      new URL("/integrations?success=connected", request.url)
+      new URL('/integrations?success=connected', request.url)
     );
   } catch (error) {
-    console.error("GitHub OAuth callback error:", error);
+    console.error('GitHub OAuth callback error:', error);
     return NextResponse.redirect(
-      new URL("/integrations?error=callback_failed", request.url)
+      new URL('/integrations?error=callback_failed', request.url)
     );
   }
 }

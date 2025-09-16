@@ -20,6 +20,7 @@ cp env.docker.example .env.local
 ### 2. Configure GitHub Apps
 
 #### GitHub OAuth App (for user sign-in)
+
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Click "New OAuth App"
 3. Fill in:
@@ -29,6 +30,7 @@ cp env.docker.example .env.local
 4. Copy Client ID and Client Secret to `.env.local`
 
 #### GitHub App (for organization integration)
+
 1. Go to [GitHub Developer Settings](https://github.com/settings/apps)
 2. Click "New GitHub App"
 3. Fill in:
@@ -94,11 +96,12 @@ npm run docker:dev
 ✅ **GitHub OAuth** for user authentication  
 ✅ **GitHub App** for organization integration  
 ✅ **Webhook Processing** with Inngest  
-✅ **Secure Token Storage** with encryption  
+✅ **Secure Token Storage** with encryption
 
 ## Troubleshooting
 
 ### Docker Issues
+
 ```bash
 # Test Docker setup
 npm run docker:test
@@ -109,6 +112,7 @@ npm run docker:dev
 ```
 
 ### Database Issues
+
 ```bash
 # Check database logs
 docker-compose logs postgres
@@ -119,6 +123,7 @@ npm run docker:dev
 ```
 
 ### Application Issues
+
 ```bash
 # Check application logs
 docker-compose logs app

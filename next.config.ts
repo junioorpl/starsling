@@ -1,15 +1,15 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // Enable standalone output for Docker
-  output: "standalone",
-  
+  output: 'standalone',
+
   // Experimental features
   experimental: {
     // Enable server components
-    serverComponentsExternalPackages: ["pg"],
+    serverComponentsExternalPackages: ['pg'],
   },
-  
+
   // Environment variables
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,

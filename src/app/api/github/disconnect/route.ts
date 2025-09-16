@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { db } from "@/lib/db";
-import { integrationInstallations } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { inngest } from "@/lib/inngest";
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { db } from '@/lib/db';
+import { integrationInstallations } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import { inngest } from '@/lib/inngest';
 
 export async function POST(request: NextRequest) {
   const session = await auth.api.getSession({
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   });
 
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     if (!organizationId) {
       return NextResponse.json(
-        { error: "Organization ID is required" },
+        { error: 'Organization ID is required' },
         { status: 400 }
       );
     }
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     if (integration.length === 0) {
       return NextResponse.json(
-        { error: "Integration not found" },
+        { error: 'Integration not found' },
         { status: 404 }
       );
     }
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     // Trigger uninstall event
     if (installationId) {
       await inngest.send({
-        name: "github/app.uninstalled",
+        name: 'github/app.uninstalled',
         data: {
           installationId,
           organizationId,
@@ -60,9 +60,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error disconnecting GitHub integration:", error);
+    console.error('Error disconnecting GitHub integration:', error);
     return NextResponse.json(
-      { error: "Failed to disconnect integration" },
+      { error: 'Failed to disconnect integration' },
       { status: 500 }
     );
   }

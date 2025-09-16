@@ -1,10 +1,10 @@
-import { inngest } from "./inngest";
+import { inngest } from './inngest';
 
 export const inngestFunctions = [
   // Handle GitHub App installation
   inngest.createFunction(
-    { id: "github-app-installed" },
-    { event: "github/app.installed" },
+    { id: 'github-app-installed' },
+    { event: 'github/app.installed' },
     async ({ event, step }) => {
       const {
         installationId,
@@ -14,7 +14,7 @@ export const inngestFunctions = [
         organizationId,
       } = event.data;
 
-      await step.run("log-installation", async () => {
+      await step.run('log-installation', async () => {
         console.log(
           `GitHub App installed for organization ${organizationId}:`,
           {
@@ -35,12 +35,12 @@ export const inngestFunctions = [
 
   // Handle GitHub App uninstallation
   inngest.createFunction(
-    { id: "github-app-uninstalled" },
-    { event: "github/app.uninstalled" },
+    { id: 'github-app-uninstalled' },
+    { event: 'github/app.uninstalled' },
     async ({ event, step }) => {
       const { installationId, organizationId } = event.data;
 
-      await step.run("log-uninstallation", async () => {
+      await step.run('log-uninstallation', async () => {
         console.log(
           `GitHub App uninstalled for organization ${organizationId}:`,
           {
@@ -55,12 +55,12 @@ export const inngestFunctions = [
 
   // Handle issue events
   inngest.createFunction(
-    { id: "github-issues-opened" },
-    { event: "github/issues.opened" },
+    { id: 'github-issues-opened' },
+    { event: 'github/issues.opened' },
     async ({ event, step }) => {
       const { installationId, issue, repository } = event.data;
 
-      await step.run("process-issue-opened", async () => {
+      await step.run('process-issue-opened', async () => {
         console.log(`Issue opened in ${repository.full_name}:`, {
           issueNumber: issue.number,
           title: issue.title,
@@ -77,12 +77,12 @@ export const inngestFunctions = [
   ),
 
   inngest.createFunction(
-    { id: "github-issues-closed" },
-    { event: "github/issues.closed" },
+    { id: 'github-issues-closed' },
+    { event: 'github/issues.closed' },
     async ({ event, step }) => {
       const { installationId, issue, repository } = event.data;
 
-      await step.run("process-issue-closed", async () => {
+      await step.run('process-issue-closed', async () => {
         console.log(`Issue closed in ${repository.full_name}:`, {
           issueNumber: issue.number,
           title: issue.title,

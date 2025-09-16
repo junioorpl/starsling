@@ -23,7 +23,7 @@ services:
     container_name: starsling-app-prod
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://starsling:${POSTGRES_PASSWORD}@postgres:5432/starsling

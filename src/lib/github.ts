@@ -1,6 +1,6 @@
-import { Octokit } from "@octokit/rest";
-import { createAppAuth } from "@octokit/auth-app";
-import { createHmac, timingSafeEqual } from "crypto";
+import { Octokit } from '@octokit/rest';
+import { createAppAuth } from '@octokit/auth-app';
+import { createHmac, timingSafeEqual } from 'crypto';
 
 // GitHub App authentication
 export function createGitHubApp() {
@@ -8,7 +8,7 @@ export function createGitHubApp() {
     authStrategy: createAppAuth,
     auth: {
       appId: process.env.GITHUB_APP_ID!,
-      privateKey: process.env.GITHUB_APP_PRIVATE_KEY!.replace(/\\n/g, "\n"),
+      privateKey: process.env.GITHUB_APP_PRIVATE_KEY!.replace(/\\n/g, '\n'),
       clientId: process.env.GITHUB_APP_CLIENT_ID!,
       clientSecret: process.env.GITHUB_APP_CLIENT_SECRET!,
     },
@@ -28,9 +28,9 @@ export function verifyWebhookSignature(
   signature: string,
   secret: string
 ): boolean {
-  const expectedSignature = createHmac("sha256", secret)
+  const expectedSignature = createHmac('sha256', secret)
     .update(payload)
-    .digest("hex");
+    .digest('hex');
 
   const expectedSignatureWithPrefix = `sha256=${expectedSignature}`;
 
