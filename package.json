@@ -11,7 +11,12 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:setup": "tsx scripts/setup-db.ts"
+    "db:setup": "tsx scripts/setup-db.ts",
+    "docker:dev": "docker-compose up --build",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up --build",
+    "docker:down": "docker-compose down",
+    "docker:clean": "docker-compose down -v --rmi all",
+    "docker:test": "./test-docker.sh"
   },
   "dependencies": {
     "@octokit/auth-app": "^8.1.0",
