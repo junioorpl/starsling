@@ -1,6 +1,10 @@
-import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { Container } from "@/components/layout/Container";
+import { Hero } from "@/components/layout/Hero";
+import { UserWelcome } from "@/components/auth/UserWelcome";
+import { GitHubSignInButton } from "@/components/auth/GitHubSignInButton";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -8,63 +12,27 @@ export default async function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Welcome to StarSling
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            The DevOps automation platform that helps you manage deployments,
-            debug issues, and resolve incidents autonomously.
-          </p>
-
+    <PageLayout background="gradient">
+      <Container className="py-16">
+        <Hero
+          title="Welcome to StarSling"
+          description="The DevOps automation platform that helps you manage deployments, debug issues, and resolve incidents autonomously."
+        >
           {session ? (
-            <div className="space-y-4">
-              <p className="text-lg text-gray-700">
-                Welcome back, {session.user.name || session.user.email}!
-              </p>
-              <div className="flex gap-4 justify-center">
-                <Link
-                  href="/integrations"
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  View Integrations
-                </Link>
-                <Link
-                  href="/api/auth/sign-out"
-                  className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
-                >
-                  Sign Out
-                </Link>
-              </div>
-            </div>
+            <UserWelcome
+              userName={session.user.name}
+              userEmail={session.user.email}
+            />
           ) : (
             <div className="space-y-4">
               <p className="text-lg text-gray-700">
                 Get started by signing in with your GitHub account
               </p>
-              <Link
-                href="/api/auth/sign-in/github"
-                className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Sign in with GitHub
-              </Link>
+              <GitHubSignInButton />
             </div>
           )}
-        </div>
-      </div>
-    </div>
+        </Hero>
+      </Container>
+    </PageLayout>
   );
 }

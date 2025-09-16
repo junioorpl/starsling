@@ -5,7 +5,10 @@ import { integrationInstallations } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { createGitHubApp } from "@/lib/github";
 import GitHubIntegrationCard from "@/components/GitHubIntegrationCard";
-import Link from "next/link";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { AuthGuard } from "@/components/layout/AuthGuard";
 
 export default async function IntegrationsPage() {
   const session = await auth.api.getSession({
@@ -13,24 +16,7 @@ export default async function IntegrationsPage() {
   });
 
   if (!session) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Authentication Required
-          </h1>
-          <p className="text-gray-600 mb-4">
-            Please sign in to view your integrations.
-          </p>
-          <Link
-            href="/api/auth/sign-in/github"
-            className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-          >
-            Sign in with GitHub
-          </Link>
-        </div>
-      </div>
-    );
+    return <AuthGuard requireAuth={true}>{null}</AuthGuard>;
   }
 
   // For this demo, we'll use the user ID as organization ID
@@ -78,16 +64,12 @@ export default async function IntegrationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Integrations
-          </h1>
-          <p className="text-gray-600">
-            Connect your tools and services to automate your DevOps workflows.
-          </p>
-        </div>
+    <PageLayout background="gray">
+      <Container className="py-8">
+        <PageHeader
+          title="Integrations"
+          description="Connect your tools and services to automate your DevOps workflows."
+        />
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <GitHubIntegrationCard
@@ -95,7 +77,7 @@ export default async function IntegrationsPage() {
             organizationId={organizationId}
           />
         </div>
-      </div>
-    </div>
+      </Container>
+    </PageLayout>
   );
 }
