@@ -1,10 +1,44 @@
-node_modules
-.next
-.git
-dist
-build
-coverage
-*.log
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Production builds
+.next/
+out/
+build/
+dist/
+
+# Environment files
 .env*
-.DS_Store
+
+# Logs
+*.log
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+
+# Documentation
+*.md
+
+# Package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
 *.tsbuildinfo
+.eslintcache
+
+# Coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
