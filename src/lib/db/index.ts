@@ -1,9 +1,25 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+
+import { getEnv } from '../env';
+import { logger } from '../logger';
+
 import * as schema from './schema';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL!,
-});
+let pool: Pool;
+let db: ReturnType<typeof drizzle>;
 
-export const db = drizzle(pool, { schema });
+try {
+  const env = getEnv();
+  pool = new Pool({
+    connectionString: env.DATABASE_URL,
+  });
+
+  db = drizzle(pool, { schema });
+  logger.info('Database connection initialized successfully');
+} catch (error) {
+  logger.error('Failed to initialize database connection', {}, error as Error);
+  throw new Error('Database initialization failed');
+}
+
+export { db };

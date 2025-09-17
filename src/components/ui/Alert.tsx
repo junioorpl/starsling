@@ -1,6 +1,7 @@
-import { HTMLAttributes, forwardRef, memo } from 'react';
+import { AlertCircle, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { forwardRef, memo, type HTMLAttributes } from 'react';
+
 import { cn } from '@/lib/utils';
-import { AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react';
 
 export interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
@@ -85,4 +86,4 @@ const AlertDescription = memo(
 );
 AlertDescription.displayName = 'AlertDescription';
 
-export { Alert, AlertIcon, AlertTitle, AlertDescription };
+export { Alert, AlertDescription, AlertIcon, AlertTitle };

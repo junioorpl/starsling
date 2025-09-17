@@ -1,10 +1,11 @@
+export { Alert, AlertDescription, AlertIcon, AlertTitle } from './Alert';
 export { Button } from './Button';
 export {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
   CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from './Card';
-export { Alert, AlertIcon, AlertTitle, AlertDescription } from './Alert';
+export { AlertModal, ConfirmModal, Modal } from './Modal';

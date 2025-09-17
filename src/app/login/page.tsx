@@ -1,5 +1,5 @@
-import { PageLayout } from '@/components/layout/PageLayout';
 import { LoginCard } from '@/components/auth/LoginCard';
+import { PageLayout } from '@/components/layout/PageLayout';
 
 const LoginPage = () => {
   return (

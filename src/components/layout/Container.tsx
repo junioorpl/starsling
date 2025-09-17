@@ -1,4 +1,5 @@
-import { ReactNode, memo, useMemo } from 'react';
+import { memo, useMemo, type ReactNode } from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface ContainerProps {
@@ -7,11 +8,11 @@ interface ContainerProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
-export const Container = memo(function Container({
+const ContainerComponent = ({
   children,
   className = '',
   size = 'lg',
-}: ContainerProps) {
+}: ContainerProps) => {
   const sizeClasses = useMemo(
     () => ({
       sm: 'max-w-2xl',
@@ -28,4 +29,8 @@ export const Container = memo(function Container({
       {children}
     </div>
   );
-});
+};
+
+ContainerComponent.displayName = 'Container';
+
+export const Container = memo(ContainerComponent);

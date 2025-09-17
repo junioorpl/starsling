@@ -1,4 +1,5 @@
-import { ReactNode, memo, useMemo } from 'react';
+import { memo, useMemo, type ReactNode } from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface HeroProps {
@@ -9,13 +10,13 @@ interface HeroProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export const Hero = memo(function Hero({
+const HeroComponent = ({
   title,
   description,
   children,
   className = '',
   size = 'lg',
-}: HeroProps) {
+}: HeroProps) => {
   const titleSizes = useMemo(
     () => ({
       sm: 'text-3xl',
@@ -38,4 +39,8 @@ export const Hero = memo(function Hero({
       {children}
     </div>
   );
-});
+};
+
+HeroComponent.displayName = 'Hero';
+
+export const Hero = memo(HeroComponent);

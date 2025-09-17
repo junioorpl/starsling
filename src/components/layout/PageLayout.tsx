@@ -1,4 +1,5 @@
-import { ReactNode, memo, useMemo } from 'react';
+import { memo, useMemo, type ReactNode } from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface PageLayoutProps {
@@ -7,11 +8,11 @@ interface PageLayoutProps {
   background?: 'default' | 'gray' | 'gradient';
 }
 
-export const PageLayout = memo(function PageLayout({
+const PageLayoutComponent = ({
   children,
   className = '',
   background = 'default',
-}: PageLayoutProps) {
+}: PageLayoutProps) => {
   const backgroundClasses = useMemo(
     () => ({
       default: 'bg-white',
@@ -28,4 +29,8 @@ export const PageLayout = memo(function PageLayout({
       {children}
     </div>
   );
-});
+};
+
+PageLayoutComponent.displayName = 'PageLayout';
+
+export const PageLayout = memo(PageLayoutComponent);

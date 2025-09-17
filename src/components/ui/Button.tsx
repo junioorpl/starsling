@@ -1,10 +1,13 @@
-import { ButtonHTMLAttributes, forwardRef, memo } from 'react';
+import { forwardRef, memo, type ButtonHTMLAttributes } from 'react';
+
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
   size?: 'sm' | 'md' | 'lg';
   asChild?: boolean;
+  loading?: boolean;
+  loadingText?: string;
 }
 
 const Button = memo(
@@ -15,12 +18,16 @@ const Button = memo(
         variant = 'primary',
         size = 'md',
         asChild: _asChild = false,
+        loading = false,
+        loadingText,
+        children,
+        disabled,
         ...props
       },
       ref
     ) => {
       const baseClasses =
-        'inline-flex items-center justify-center rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+        'inline-flex items-center justify-center rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
 
       const variants = {
         primary: 'bg-blue-600 text-white hover:bg-blue-700',
@@ -37,12 +44,20 @@ const Button = memo(
         lg: 'px-8 py-4 text-lg',
       };
 
+      const isDisabled = disabled || loading;
+
       return (
         <button
           className={cn(baseClasses, variants[variant], sizes[size], className)}
           ref={ref}
+          disabled={isDisabled}
           {...props}
-        />
+        >
+          {loading && (
+            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+          )}
+          {loading ? loadingText || 'Loading...' : children}
+        </button>
       );
     }
   )

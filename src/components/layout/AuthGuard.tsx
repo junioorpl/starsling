@@ -1,12 +1,13 @@
-import { ReactNode, memo, useMemo } from 'react';
 import Link from 'next/link';
+import { memo, useMemo, type ReactNode } from 'react';
+
 import { GitHubSignInButton } from '@/components/auth/GitHubSignInButton';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/Card';
 
 interface AuthGuardProps {
@@ -15,11 +16,11 @@ interface AuthGuardProps {
   requireAuth?: boolean;
 }
 
-export const AuthGuard = memo(function AuthGuard({
+const AuthGuardComponent = ({
   children,
   fallback,
   requireAuth = true,
-}: AuthGuardProps) {
+}: AuthGuardProps) => {
   const defaultFallback = useMemo(
     () => (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -35,7 +36,7 @@ export const AuthGuard = memo(function AuthGuard({
             <div className="text-center">
               <Link
                 href="/"
-                className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                className="text-sm text-gray-600 hover:text-gray-800 transition-colors cursor-pointer"
               >
                 ← Back to home
               </Link>
@@ -52,4 +53,8 @@ export const AuthGuard = memo(function AuthGuard({
   }
 
   return <>{fallback || defaultFallback}</>;
-});
+};
+
+AuthGuardComponent.displayName = 'AuthGuard';
+
+export const AuthGuard = memo(AuthGuardComponent);

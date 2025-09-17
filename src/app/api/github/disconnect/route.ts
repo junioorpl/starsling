@@ -1,29 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import { eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
+import { NextResponse, type NextRequest } from 'next/server';
+
+import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { integrationInstallations } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
 import { inngest } from '@/lib/inngest';
+import { logger } from '@/lib/logger';
+import { getOrCreateDefaultOrganization } from '@/lib/organization';
 
-export async function POST(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
+export async function POST(_request: NextRequest) {
   try {
-    const { organizationId } = await request.json();
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
 
-    if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
+    if (!session) {
+      logger.warn(
+        'Unauthenticated access attempt to GitHub disconnect endpoint'
       );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Get or create a default organization for the user
+    const organization = await getOrCreateDefaultOrganization(session.user.id);
+    const organizationId = organization.id;
 
     // Find the integration
     const integration = await db
@@ -33,14 +34,17 @@ export async function POST(request: NextRequest) {
       .limit(1);
 
     if (integration.length === 0) {
+      logger.warn('Integration not found for disconnect', {
+        userId: session.user.id,
+        organizationId,
+      });
       return NextResponse.json(
         { error: 'Integration not found' },
         { status: 404 }
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const installationId = (integration[0].metadata as any)?.installationId;
+    const installationId = integration[0].metadata?.installationId;
 
     // Delete the integration from database
     await db
@@ -56,11 +60,22 @@ export async function POST(request: NextRequest) {
           organizationId,
         },
       });
+
+      logger.info('Sent uninstall event to Inngest', {
+        installationId,
+        organizationId,
+        userId: session.user.id,
+      });
     }
+
+    logger.info('Successfully disconnected GitHub integration', {
+      organizationId,
+      userId: session.user.id,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error disconnecting GitHub integration:', error);
+    logger.error('Error disconnecting GitHub integration', {}, error as Error);
     return NextResponse.json(
       { error: 'Failed to disconnect integration' },
       { status: 500 }

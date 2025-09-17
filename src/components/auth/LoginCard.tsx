@@ -1,13 +1,14 @@
 import Link from 'next/link';
+import { memo } from 'react';
+
 import { GitHubSignInButton } from '@/components/auth/GitHubSignInButton';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/Card';
-import { memo } from 'react';
 
 interface LoginCardProps {
   title?: string;
@@ -17,13 +18,13 @@ interface LoginCardProps {
   className?: string;
 }
 
-export const LoginCard = memo(function LoginCard({
+const LoginCardComponent = ({
   title = 'Welcome to StarSling',
   description = 'Sign in to access your DevOps automation platform',
   showBackLink = true,
   showTerms = true,
   className = '',
-}: LoginCardProps) {
+}: LoginCardProps) => {
   return (
     <Card className={`w-full max-w-md ${className}`}>
       <CardHeader className="text-center">
@@ -37,7 +38,7 @@ export const LoginCard = memo(function LoginCard({
           <div className="text-center">
             <Link
               href="/"
-              className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+              className="text-sm text-gray-600 hover:text-gray-800 transition-colors cursor-pointer"
             >
               ← Back to home
             </Link>
@@ -56,4 +57,8 @@ export const LoginCard = memo(function LoginCard({
       </CardContent>
     </Card>
   );
-});
+};
+
+LoginCardComponent.displayName = 'LoginCard';
+
+export const LoginCard = memo(LoginCardComponent);

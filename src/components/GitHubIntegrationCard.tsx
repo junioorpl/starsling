@@ -1,7 +1,10 @@
 'use client';
 
-import { useState, memo, useCallback } from 'react';
-import { Github, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
+import { AlertCircle, CheckCircle, ExternalLink, Github } from 'lucide-react';
+import { memo, useCallback, useState } from 'react';
+
+import { Button } from '@/components/ui/Button';
+import { AlertModal, ConfirmModal } from '@/components/ui/Modal';
 
 interface GitHubIntegrationCardProps {
   status: {
@@ -11,15 +14,35 @@ interface GitHubIntegrationCardProps {
     permissions?: Record<string, string>;
     events?: string[];
     error?: string;
+    canSync?: boolean;
+    installationId?: number;
   } | null;
   organizationId: string;
+  availableInstallations?: Array<{
+    id: number;
+    account: {
+      id: number;
+      login: string;
+      type: string;
+    } | null;
+    permissions: Record<string, string>;
+    events: string[];
+  }> | null;
 }
 
-const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
+const GitHubIntegrationCardComponent = ({
   status,
   organizationId,
-}: GitHubIntegrationCardProps) {
+  availableInstallations,
+}: GitHubIntegrationCardProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+
+  // Modal states
+  const [showDisconnectModal, setShowDisconnectModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleConnect = useCallback(async () => {
     setIsConnecting(true);
@@ -27,31 +50,73 @@ const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
       // Redirect to GitHub App OAuth flow
       window.location.href = `/api/github/auth?organizationId=${organizationId}`;
     } catch (error) {
+      // Note: In client-side components, we can't use the server logger
+      // This would typically be handled by a client-side error reporting service
+      // eslint-disable-next-line no-console
       console.error('Error initiating GitHub connection:', error);
       setIsConnecting(false);
     }
   }, [organizationId]);
 
-  const handleDisconnect = useCallback(async () => {
-    if (confirm('Are you sure you want to disconnect this integration?')) {
-      try {
-        const response = await fetch('/api/github/disconnect', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ organizationId }),
-        });
+  const handleSync = useCallback(async () => {
+    setIsSyncing(true);
+    try {
+      const response = await fetch('/api/github/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          alert('Failed to disconnect integration');
-        }
-      } catch (error) {
-        console.error('Error disconnecting GitHub integration:', error);
-        alert('Failed to disconnect integration');
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(
+          `Failed to sync integration: ${errorData.error || 'Unknown error'}`
+        );
+        setShowErrorModal(true);
       }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error syncing GitHub integration:', error);
+      setErrorMessage('Failed to sync integration');
+      setShowErrorModal(true);
+    } finally {
+      setIsSyncing(false);
+    }
+  }, []);
+
+  const handleDisconnectClick = useCallback(() => {
+    setShowDisconnectModal(true);
+  }, []);
+
+  const handleDisconnectConfirm = useCallback(async () => {
+    setIsDisconnecting(true);
+    try {
+      const response = await fetch('/api/github/disconnect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ organizationId }),
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        setErrorMessage('Failed to disconnect integration');
+        setShowErrorModal(true);
+      }
+    } catch (error) {
+      // Note: In client-side components, we can't use the server logger
+      // This would typically be handled by a client-side error reporting service
+      // eslint-disable-next-line no-console
+      console.error('Error disconnecting GitHub integration:', error);
+      setErrorMessage('Failed to disconnect integration');
+      setShowErrorModal(true);
+    } finally {
+      setIsDisconnecting(false);
     }
   }, [organizationId]);
 
@@ -130,21 +195,29 @@ const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
           )}
 
           <div className="flex gap-2">
-            <button
-              onClick={handleDisconnect}
-              className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+            <Button
+              variant="destructive"
+              size="sm"
+              className="flex-1"
+              onClick={handleDisconnectClick}
             >
               Disconnect
-            </button>
-            <a
-              href="https://github.com/settings/installations"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
-            >
-              Manage
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <a
+                href={
+                  status.accountType === 'Organization' && status.accountLogin
+                    ? `https://github.com/organizations/${status.accountLogin}/settings/installations/${status.installationId || ''}`
+                    : `https://github.com/settings/installations/${status.installationId || ''}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
+                Manage
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </Button>
           </div>
         </div>
       ) : (
@@ -166,27 +239,95 @@ const GitHubIntegrationCard = memo(function GitHubIntegrationCard({
             </div>
           )}
 
-          <button
-            onClick={handleConnect}
-            disabled={isConnecting}
-            className="w-full bg-gray-900 text-white px-4 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isConnecting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Connecting...
-              </>
+          {status?.canSync &&
+            availableInstallations &&
+            availableInstallations.length > 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 text-blue-800 mb-2">
+                  <CheckCircle className="w-4 h-4" />
+                  <span className="font-medium">Installation Found</span>
+                </div>
+                <p className="text-sm text-blue-700 mb-3">
+                  We found a GitHub App installation that can be synced:
+                </p>
+                <div className="space-y-2">
+                  {availableInstallations.map(installation => (
+                    <div
+                      key={installation.id}
+                      className="flex items-center justify-between bg-white rounded p-2"
+                    >
+                      <div>
+                        <span className="font-medium">
+                          {installation.account?.login}
+                        </span>
+                        <span className="text-sm text-gray-500 ml-2">
+                          ({installation.account?.type})
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-500">
+                        ID: {installation.id}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          <div className="space-y-2">
+            {status?.canSync ? (
+              <Button
+                variant="primary"
+                size="lg"
+                className="w-full"
+                onClick={handleSync}
+                loading={isSyncing}
+                loadingText="Syncing..."
+              >
+                <CheckCircle className="w-4 h-4" />
+                Sync Installation
+              </Button>
             ) : (
-              <>
+              <Button
+                variant="primary"
+                size="lg"
+                className="w-full bg-gray-900 hover:bg-gray-800"
+                onClick={handleConnect}
+                loading={isConnecting}
+                loadingText="Connecting..."
+              >
                 <Github className="w-4 h-4" />
                 Connect GitHub
-              </>
+              </Button>
             )}
-          </button>
+          </div>
         </div>
       )}
+
+      {/* Modals */}
+      <ConfirmModal
+        open={showDisconnectModal}
+        onClose={() => setShowDisconnectModal(false)}
+        onConfirm={handleDisconnectConfirm}
+        title="Disconnect Integration"
+        message="Are you sure you want to disconnect this GitHub integration? This will remove all associated data and stop automated workflows."
+        confirmText="Disconnect"
+        cancelText="Cancel"
+        variant="destructive"
+        loading={isDisconnecting}
+      />
+
+      <AlertModal
+        open={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        title="Error"
+        message={errorMessage}
+        variant="error"
+        buttonText="OK"
+      />
     </div>
   );
-});
+};
 
-export default GitHubIntegrationCard;
+GitHubIntegrationCardComponent.displayName = 'GitHubIntegrationCard';
+
+export default memo(GitHubIntegrationCardComponent);

@@ -1,7 +1,11 @@
-import Link from 'next/link';
+'use client';
+
 import { Github } from 'lucide-react';
+import { memo, useMemo, useState } from 'react';
+
 import { Button } from '@/components/ui/Button';
-import { memo, useMemo } from 'react';
+import { authClient } from '@/lib/auth-client';
+import { logger } from '@/lib/logger';
 
 interface GitHubSignInButtonProps {
   href?: string;
@@ -10,12 +14,14 @@ interface GitHubSignInButtonProps {
   variant?: 'default' | 'full-width';
 }
 
-export const GitHubSignInButton = memo(function GitHubSignInButton({
-  href = '/api/auth/sign-in/github',
+const GitHubSignInButtonComponent = ({
+  href: _href,
   className,
   children = 'Sign in with GitHub',
   variant = 'default',
-}: GitHubSignInButtonProps) {
+}: GitHubSignInButtonProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const buttonClasses = useMemo(
     () =>
       variant === 'full-width'
@@ -24,15 +30,44 @@ export const GitHubSignInButton = memo(function GitHubSignInButton({
     [variant]
   );
 
+  const handleSignIn = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const result = await authClient.signIn.social({
+        provider: 'github',
+        callbackURL: '/',
+      });
+
+      if (result.error) {
+        logger.error('Sign-in failed', { error: result.error });
+        return;
+      }
+
+      // Redirect will be handled automatically by Better Auth
+      logger.info('GitHub sign-in initiated successfully');
+    } catch (error) {
+      logger.error('Sign-in failed', {}, error as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Link href={href} className={className}>
-      <Button
-        variant="primary"
-        className={`${buttonClasses} bg-gray-900 hover:bg-gray-800`}
-      >
-        <Github className="w-5 h-5" />
-        {children}
-      </Button>
-    </Link>
+    <Button
+      variant="primary"
+      className={`${buttonClasses} bg-gray-900 hover:bg-gray-800 ${className || ''}`}
+      onClick={handleSignIn}
+      loading={isLoading}
+      loadingText="Signing in..."
+    >
+      <Github className="w-5 h-5" />
+      {children}
+    </Button>
   );
-});
+};
+
+GitHubSignInButtonComponent.displayName = 'GitHubSignInButton';
+
+export const GitHubSignInButton = memo(GitHubSignInButtonComponent);

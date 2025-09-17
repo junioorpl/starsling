@@ -1,4 +1,5 @@
-import { HTMLAttributes, forwardRef, memo } from 'react';
+import { forwardRef, memo, type HTMLAttributes } from 'react';
+
 import { cn } from '@/lib/utils';
 
 export type CardProps = HTMLAttributes<HTMLDivElement>;
@@ -77,9 +78,9 @@ CardFooter.displayName = 'CardFooter';
 
 export {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
   CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 };
