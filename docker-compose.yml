@@ -1,9 +1,8 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
+    platform: linux/amd64
     container_name: starsling-postgres
     restart: unless-stopped
     environment:
@@ -30,21 +29,12 @@ services:
     restart: unless-stopped
     ports:
       - '3000:3000'
+    env_file:
+      - .env.local
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://starsling:starsling_password@postgres:5432/starsling
-      - BETTER_AUTH_SECRET=your-secret-key-here-change-in-production
-      - BETTER_AUTH_URL=http://localhost:3000
-      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
-      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
-      - GITHUB_APP_ID=${GITHUB_APP_ID}
-      - GITHUB_APP_CLIENT_ID=${GITHUB_APP_CLIENT_ID}
-      - GITHUB_APP_CLIENT_SECRET=${GITHUB_APP_CLIENT_SECRET}
-      - GITHUB_APP_PRIVATE_KEY=${GITHUB_APP_PRIVATE_KEY}
-      - GITHUB_WEBHOOK_SECRET=${GITHUB_WEBHOOK_SECRET}
-      - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY}
-      - INNGEST_SIGNING_KEY=${INNGEST_SIGNING_KEY}
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - INNGEST_ENV=dev
     volumes:
       - .:/app
       - /app/node_modules

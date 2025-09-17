@@ -1,5 +1,5 @@
 -- Initialize the database
-CREATE DATABASE IF NOT EXISTS starsling;
+-- Database is already created by POSTGRES_DB environment variable
 
 -- Create the starsling user if it doesn't exist
 DO $$
