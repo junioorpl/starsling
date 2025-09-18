@@ -4,7 +4,7 @@ import { logger } from './logger';
 
 // Configure Inngest based on environment following official patterns
 const isDevelopment = process.env.NODE_ENV === 'development';
-const isProduction = process.env.NODE_ENV === 'production';
+const _isProduction = process.env.NODE_ENV === 'production';
 
 // Base configuration
 const config: {
