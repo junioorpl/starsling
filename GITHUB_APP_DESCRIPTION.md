@@ -245,19 +245,19 @@ Description: DevOps automation platform that helps teams manage deployments, deb
 Webhook URL: https://your-domain.com/api/github/webhook
 Webhook events:
 - Issues (opened, closed, edited, reopened)
-- Pull requests
-- Deployments
-- Repository
+- Installation (created, deleted)
+- Installation repositories (added, removed)
+- Repository (optional - for future features)
 
-Permissions:
-- Repository: Read
-- Issues: Write
-- Pull requests: Read
-- Deployments: Read
+Repository Permissions:
+- Contents: Read
+- Issues: Read
 - Metadata: Read
-- Organization members: Read
+- Pull requests: Read (for future features)
 
-User permissions:
-- Read access to organization data
-- Read access to repository metadata
+Organization Permissions:
+- Members: Read
+
+Account Permissions:
+- Email addresses: Read (if using GitHub OAuth)
 ```
