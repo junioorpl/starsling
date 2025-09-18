@@ -62,11 +62,11 @@ export const IssueCard = ({ issue }: IssueCardProps) => {
           >
             #{issue.number}
           </Link>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-600">
             in {issue.repository.fullName}
           </span>
         </div>
-        <div className="flex items-center space-x-2 text-sm text-gray-500">
+        <div className="flex items-center space-x-2 text-sm text-gray-600">
           {issue.commentsCount !== '0' && <span>💬 {issue.commentsCount}</span>}
           {issue.reactionsCount !== '0' && (
             <span>👍 {issue.reactionsCount}</span>
@@ -86,16 +86,16 @@ export const IssueCard = ({ issue }: IssueCardProps) => {
       </h3>
 
       {issue.body && (
-        <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+        <p className="text-gray-700 text-sm mb-3 line-clamp-3">
           {truncateText(issue.body, 200)}
         </p>
       )}
 
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-500">by {issue.author}</span>
+          <span className="text-sm text-gray-600">by {issue.author}</span>
           {issue.assignees.length > 0 && (
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-600">
               • assigned to {issue.assignees.join(', ')}
             </span>
           )}
@@ -112,7 +112,7 @@ export const IssueCard = ({ issue }: IssueCardProps) => {
                 </span>
               ))}
               {issue.labels.length > 3 && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-600">
                   +{issue.labels.length - 3} more
                 </span>
               )}
@@ -122,7 +122,7 @@ export const IssueCard = ({ issue }: IssueCardProps) => {
       </div>
 
       <div className="mt-3 pt-3 border-t border-gray-100">
-        <div className="flex items-center justify-between text-sm text-gray-500">
+        <div className="flex items-center justify-between text-sm text-gray-600">
           <span>
             Updated{' '}
             {formatDistanceToNow(new Date(issue.updatedAt), {

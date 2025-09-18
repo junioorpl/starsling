@@ -50,7 +50,7 @@ const CardDescription = memo(
     ({ className, ...props }, ref) => (
       <p
         ref={ref}
-        className={cn('text-sm text-gray-500', className)}
+        className={cn('text-sm text-gray-600', className)}
         {...props}
       />
     )
