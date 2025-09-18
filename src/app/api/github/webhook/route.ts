@@ -281,7 +281,7 @@ async function handleIssuesEvent(payload: GitHubWebhookIssuePayload) {
   try {
     const { action, issue, repository, installation } = payload;
 
-    if (!['opened', 'closed'].includes(action)) {
+    if (!['opened', 'closed', 'edited', 'reopened'].includes(action)) {
       logger.info('Ignoring issue event action', { action });
       return;
     }
@@ -299,7 +299,9 @@ async function handleIssuesEvent(payload: GitHubWebhookIssuePayload) {
     await inngest.send({
       name: `github/issues.${action}` as
         | 'github/issues.opened'
-        | 'github/issues.closed',
+        | 'github/issues.closed'
+        | 'github/issues.edited'
+        | 'github/issues.reopened',
       data: {
         installationId,
         issue,
