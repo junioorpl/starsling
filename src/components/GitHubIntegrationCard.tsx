@@ -129,7 +129,7 @@ const GitHubIntegrationCardComponent = ({
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">GitHub</h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-600">
               Connect your GitHub organization
             </p>
           </div>
@@ -141,7 +141,7 @@ const GitHubIntegrationCardComponent = ({
             <span className="text-sm font-medium">Connected</span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-gray-400">
+          <div className="flex items-center gap-2 text-gray-500">
             <AlertCircle className="w-5 h-5" />
             <span className="text-sm">Disconnected</span>
           </div>
@@ -260,11 +260,11 @@ const GitHubIntegrationCardComponent = ({
                         <span className="font-medium">
                           {installation.account?.login}
                         </span>
-                        <span className="text-sm text-gray-500 ml-2">
+                        <span className="text-sm text-gray-600 ml-2">
                           ({installation.account?.type})
                         </span>
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-600">
                         ID: {installation.id}
                       </span>
                     </div>

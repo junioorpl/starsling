@@ -32,7 +32,7 @@ const HeroComponent = ({
         {title}
       </h1>
       {description && (
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
           {description}
         </p>
       )}
