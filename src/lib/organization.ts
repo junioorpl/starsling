@@ -8,7 +8,7 @@ export interface Organization {
   id: string;
   name: string;
   slug: string;
-  description?: string;
+  description?: string | null;
   ownerId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -199,7 +199,7 @@ export async function addOrganizationMember(
       role,
     });
 
-    return member;
+    return member as OrganizationMember;
   } catch (error) {
     logger.error(
       'Failed to add organization member',
@@ -247,7 +247,7 @@ export async function getOrganizationMembers(
       .from(organizationMembers)
       .where(eq(organizationMembers.organizationId, organizationId));
 
-    return members;
+    return members as OrganizationMember[];
   } catch (error) {
     logger.error(
       'Failed to get organization members',
@@ -273,13 +273,13 @@ export async function getOrCreateDefaultOrganization(
     }
 
     // Create a default organization for the user
-    const userData = await db
+    const _userData = await db
       .select({ email: user.email })
       .from(user)
       .where(eq(user.id, userId))
       .limit(1);
 
-    const defaultName = `Personal Organization`;
+    const defaultName = 'Personal Organization';
     const defaultSlug = `personal-${userId.slice(0, 8)}`;
 
     return await createOrganization(
