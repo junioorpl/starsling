@@ -10,7 +10,7 @@ import { getInstallationAccessToken, listInstallations } from '@/lib/github';
 import { logger } from '@/lib/logger';
 import { getOrCreateDefaultOrganization } from '@/lib/organization';
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
