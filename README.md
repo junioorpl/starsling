@@ -315,7 +315,3 @@ Make sure to update the following URLs for production:
 ### Logs
 
 Check the console for detailed error messages and webhook processing logs.
-
-## License
-
-This project is part of the StarSling takehome assignment.
