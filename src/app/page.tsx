@@ -7,14 +7,33 @@ import { Container } from '@/components/layout/Container';
 import { Hero } from '@/components/layout/Hero';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { auth } from '@/lib/auth';
+import { logger } from '@/lib/logger';
+import { getOrCreateDefaultOrganization } from '@/lib/organization';
 
 const Home = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
+  // Get user's organization for displaying data
+  let organizationId: string | null = null;
+  if (session?.user) {
+    try {
+      const organization = await getOrCreateDefaultOrganization(
+        session.user.id
+      );
+      organizationId = organization.id;
+    } catch (error) {
+      logger.error(
+        'Failed to get user organization',
+        { userId: session.user.id },
+        error as Error
+      );
+    }
+  }
+
   return (
-    <PageLayout background="gradient">
+    <PageLayout background="gradient" fullHeight>
       <Container className="py-16">
         <Hero
           title="Welcome to StarSling"
@@ -36,7 +55,7 @@ const Home = async () => {
         </Hero>
       </Container>
 
-      {session && (
+      {session && organizationId && (
         <Container className="py-8">
           <div className="space-y-8">
             <div>
@@ -47,7 +66,11 @@ const Home = async () => {
                 Stay updated with the latest issues from your synced
                 repositories
               </p>
-              <IssuesList state="open" limit={5} />
+              <IssuesList
+                organizationId={organizationId}
+                state="open"
+                limit={5}
+              />
             </div>
           </div>
         </Container>
