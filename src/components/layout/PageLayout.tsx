@@ -6,12 +6,14 @@ interface PageLayoutProps {
   children: ReactNode;
   className?: string;
   background?: 'default' | 'gray' | 'gradient';
+  fullHeight?: boolean;
 }
 
 const PageLayoutComponent = ({
   children,
   className = '',
   background = 'default',
+  fullHeight = false,
 }: PageLayoutProps) => {
   const backgroundClasses = useMemo(
     () => ({
@@ -24,7 +26,11 @@ const PageLayoutComponent = ({
 
   return (
     <div
-      className={cn('min-h-screen', backgroundClasses[background], className)}
+      className={cn(
+        fullHeight ? 'min-h-screen' : 'min-h-[calc(100vh-4rem)]',
+        backgroundClasses[background],
+        className
+      )}
     >
       {children}
     </div>

@@ -156,7 +156,6 @@ const IntegrationsPage = async () => {
         <PageHeader
           title="Integrations"
           description="Connect your tools and services to automate your DevOps workflows."
-          showLogout={true}
         />
 
         <div className="space-y-6">

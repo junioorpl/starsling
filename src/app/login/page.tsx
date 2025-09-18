@@ -5,6 +5,7 @@ const LoginPage = () => {
   return (
     <PageLayout
       background="gradient"
+      fullHeight
       className="flex items-center justify-center"
     >
       <LoginCard />
