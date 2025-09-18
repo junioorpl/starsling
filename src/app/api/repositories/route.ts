@@ -5,6 +5,7 @@ import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { organizations, repositories } from '@/lib/db/schema';
 import { logger } from '@/lib/logger';
+import { getUserOrganizationRole } from '@/lib/organization';
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,6 +24,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { error: 'Organization ID is required' },
         { status: 400 }
+      );
+    }
+
+    // Verify user has access to this organization
+    const userRole = await getUserOrganizationRole(
+      session.user.id,
+      organizationId
+    );
+    if (!userRole) {
+      return NextResponse.json(
+        { error: 'Access denied to this organization' },
+        { status: 403 }
       );
     }
 
