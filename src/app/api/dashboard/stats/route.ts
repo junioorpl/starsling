@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { and, count, eq, sql } from 'drizzle-orm';
+import { NextResponse, type NextRequest } from 'next/server';
 
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -9,7 +10,6 @@ import {
 } from '@/lib/db/schema';
 import { logger } from '@/lib/logger';
 import { getOrCreateDefaultOrganization } from '@/lib/organization';
-import { and, count, eq, sql } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   try {
