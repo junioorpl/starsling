@@ -30,12 +30,15 @@ StarSling is a comprehensive DevOps automation platform designed to streamline y
 
 ### Key Features
 
-**🔧 Automated Issue Management**
+**🔧 Centralized Issue Management**
 
-- Real-time issue tracking and categorization
-- Intelligent issue assignment based on team expertise
-- Automated status updates and progress tracking
-- GitHub webhook integration for instant updates
+- **Real-time Issue Centralization**: Automatically fetch and centralize all issues from synced repositories
+- **Intelligent Deduplication**: Smart detection and prevention of duplicate issues across repositories
+- **Live Issue Notifications**: Real-time notifications on the main dashboard for new and updated issues
+- **Comprehensive Issue Tracking**: Track issue state changes, assignments, labels, and comments
+- **Cross-Repository Visibility**: View all issues from multiple repositories in a unified interface
+- **GitHub Webhook Integration**: Instant updates via GitHub webhooks for issue events (opened, closed, edited, reopened)
+- **Background Processing**: Inngest-powered background jobs for reliable issue ingestion and updates
 
 **🚀 Deployment Management**
 
@@ -49,13 +52,16 @@ StarSling is a comprehensive DevOps automation platform designed to streamline y
 - Automated incident detection and escalation
 - Smart alerting based on deployment patterns
 - Integrated debugging tools and log analysis
-- GitHub issue and PR integration for incident tracking
+- **Issue-Centric Incident Tracking**: Link incidents directly to GitHub issues for comprehensive tracking
+- **Real-time Issue Monitoring**: Monitor critical issues across all repositories for potential incidents
 
 **📊 Analytics & Insights**
 
 - Comprehensive reporting on deployment success rates
 - Team productivity metrics and insights
 - Historical trend analysis and predictions
+- **Issue Analytics**: Track issue resolution times, assignment patterns, and team workload
+- **Cross-Repository Insights**: Analyze issue patterns across multiple repositories
 - GitHub activity correlation and analysis
 
 ### Why Choose StarSling?
@@ -80,7 +86,31 @@ StarSling is a comprehensive DevOps automation platform designed to streamline y
 1. **Sign in with GitHub**: Use your GitHub account to authenticate via BetterAuth
 2. **Install GitHub App**: Install the StarSling GitHub App on your organization
 3. **Configure Integration**: Set up your deployment pipelines and monitoring rules
-4. **Start Automating**: Begin automating your DevOps workflow with intelligent features
+4. **Enable Issue Centralization**: 
+   - Ensure "Issues" webhook events are enabled in your GitHub App settings
+   - Select repositories you want to sync issues from
+   - Issues will automatically start appearing in your dashboard
+5. **Start Automating**: Begin automating your DevOps workflow with intelligent features
+
+### Issue Centralization Setup
+
+**Required GitHub App Permissions:**
+- Repository: Read (to access repository metadata)
+- Issues: Read (to fetch issue data)
+- Webhook: Issues events (opened, closed, edited, reopened)
+
+**Configuration Steps:**
+1. **Webhook Configuration**: Ensure your GitHub App webhook URL points to `/api/github/webhook`
+2. **Event Selection**: Enable "Issues" events in your GitHub App settings
+3. **Repository Selection**: Choose which repositories to sync issues from
+4. **Background Processing**: Inngest will automatically process incoming issue events
+5. **Dashboard Access**: View centralized issues on your main dashboard
+
+**Data Processing:**
+- Issues are automatically ingested via GitHub webhooks
+- Inngest handles background processing for reliability
+- Duplicate detection prevents data redundancy
+- Real-time updates ensure current issue status
 
 Transform your development process with StarSling - where BetterAuth security meets GitHub automation.
 
@@ -214,7 +244,7 @@ Description: DevOps automation platform that helps teams manage deployments, deb
 
 Webhook URL: https://your-domain.com/api/github/webhook
 Webhook events:
-- Issues
+- Issues (opened, closed, edited, reopened)
 - Pull requests
 - Deployments
 - Repository
