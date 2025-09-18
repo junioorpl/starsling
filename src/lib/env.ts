@@ -35,8 +35,7 @@ function validateEnvironment(): EnvironmentConfig {
     INNGEST_ENV: process.env.INNGEST_ENV || 'main',
     BETTER_AUTH_SECRET: validateEnvironmentVariable('BETTER_AUTH_SECRET'),
     BETTER_AUTH_URL: validateEnvironmentVariable('BETTER_AUTH_URL'),
-    NEXT_PUBLIC_APP_URL:
-      process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    NEXT_PUBLIC_APP_URL: validateEnvironmentVariable('NEXT_PUBLIC_APP_URL'),
   };
 
   // Count missing required variables
@@ -75,8 +74,8 @@ function validateEnvironment(): EnvironmentConfig {
     INNGEST_SIGNING_KEY: config.INNGEST_SIGNING_KEY || '',
     INNGEST_ENV: config.INNGEST_ENV || 'main',
     BETTER_AUTH_SECRET: config.BETTER_AUTH_SECRET || '',
-    BETTER_AUTH_URL: config.BETTER_AUTH_URL || 'http://localhost:3000',
-    NEXT_PUBLIC_APP_URL: config.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    BETTER_AUTH_URL: config.BETTER_AUTH_URL || '',
+    NEXT_PUBLIC_APP_URL: config.NEXT_PUBLIC_APP_URL || '',
   };
 }
 
