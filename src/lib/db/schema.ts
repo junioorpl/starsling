@@ -104,3 +104,74 @@ export const integrationInstallations = pgTable('integration_installations', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+export const repositories = pgTable('repositories', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  organizationId: uuid('organization_id')
+    .notNull()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
+  githubId: text('github_id').notNull().unique(),
+  name: text('name').notNull(),
+  fullName: text('full_name').notNull(),
+  description: text('description'),
+  private: boolean('private').notNull().default(false),
+  url: text('url').notNull(),
+  cloneUrl: text('clone_url'),
+  defaultBranch: text('default_branch').notNull().default('main'),
+  language: text('language'),
+  topics: jsonb('topics').$type<string[]>(),
+  metadata: jsonb('metadata').$type<{
+    size?: number;
+    stargazersCount?: number;
+    watchersCount?: number;
+    forksCount?: number;
+    openIssuesCount?: number;
+    hasIssues?: boolean;
+    hasProjects?: boolean;
+    hasWiki?: boolean;
+    hasPages?: boolean;
+    archived?: boolean;
+    disabled?: boolean;
+  }>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const issues = pgTable('issues', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  organizationId: uuid('organization_id')
+    .notNull()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
+  repositoryId: uuid('repository_id')
+    .notNull()
+    .references(() => repositories.id, { onDelete: 'cascade' }),
+  githubId: text('github_id').notNull().unique(),
+  number: text('number').notNull(),
+  title: text('title').notNull(),
+  body: text('body'),
+  state: varchar('state', { length: 20 }).notNull().default('open'), // open, closed
+  locked: boolean('locked').notNull().default(false),
+  author: text('author').notNull(),
+  authorAssociation: varchar('author_association', { length: 50 }),
+  assignees: jsonb('assignees').$type<string[]>(),
+  labels: jsonb('labels').$type<string[]>(),
+  milestone: text('milestone'),
+  commentsCount: text('comments_count').notNull().default('0'),
+  reactionsCount: text('reactions_count').notNull().default('0'),
+  url: text('url').notNull(),
+  htmlUrl: text('html_url').notNull(),
+  apiUrl: text('api_url').notNull(),
+  metadata: jsonb('metadata').$type<{
+    pullRequest?: {
+      url: string;
+      htmlUrl: string;
+      diffUrl: string;
+      patchUrl: string;
+    };
+    closedAt?: string;
+    createdAt: string;
+    updatedAt: string;
+  }>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
