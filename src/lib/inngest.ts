@@ -3,8 +3,6 @@ import { Inngest } from 'inngest';
 import { logger } from './logger';
 
 // Configure Inngest based on environment following official patterns
-const isDevelopment = process.env.NODE_ENV === 'development';
-const _isProduction = process.env.NODE_ENV === 'production';
 
 // Base configuration
 const config: {
@@ -20,20 +18,13 @@ const config: {
 // Set branch name from INNGEST_ENV environment variable
 config.branch = process.env.INNGEST_ENV || 'main';
 
-// For local development, use minimal configuration without authentication
-// For production, use Inngest Cloud with authentication
-if (isDevelopment) {
-  // In development, use minimal configuration (no authentication needed)
-  // The local Inngest dev server handles authentication
-  // Don't add any keys for local development
-} else {
-  // In production, use Inngest Cloud with authentication
-  if (process.env.INNGEST_EVENT_KEY) {
-    config.eventKey = process.env.INNGEST_EVENT_KEY;
-  }
-  if (process.env.INNGEST_SIGNING_KEY) {
-    config.signingKey = process.env.INNGEST_SIGNING_KEY;
-  }
+// Add authentication keys for both development and production
+// These keys are required for proper communication with Inngest
+if (process.env.INNGEST_EVENT_KEY) {
+  config.eventKey = process.env.INNGEST_EVENT_KEY;
+}
+if (process.env.INNGEST_SIGNING_KEY) {
+  config.signingKey = process.env.INNGEST_SIGNING_KEY;
 }
 
 // Initialize Inngest client
@@ -46,7 +37,7 @@ try {
     environment: process.env.NODE_ENV || 'development',
     hasEventKey: !!process.env.INNGEST_EVENT_KEY,
     hasSigningKey: !!process.env.INNGEST_SIGNING_KEY,
-    mode: isDevelopment ? 'local' : 'cloud',
+    branch: config.branch,
   });
 } catch (error) {
   logger.error('Failed to initialize Inngest client', {}, error as Error);
@@ -72,6 +63,16 @@ export type Events = {
       organizationId: string;
     };
   };
+  'github/installation.repositories': {
+    data: {
+      action: string;
+      installationId: number;
+      organizationId: string;
+      repositoriesAdded: Array<Record<string, unknown>>;
+      repositoriesRemoved: Array<Record<string, unknown>>;
+      repositorySelection: string;
+    };
+  };
   'github/issues.opened': {
     data: {
       installationId: number;
@@ -80,6 +81,20 @@ export type Events = {
     };
   };
   'github/issues.closed': {
+    data: {
+      installationId: number;
+      issue: Record<string, unknown>;
+      repository: Record<string, unknown>;
+    };
+  };
+  'github/issues.edited': {
+    data: {
+      installationId: number;
+      issue: Record<string, unknown>;
+      repository: Record<string, unknown>;
+    };
+  };
+  'github/issues.reopened': {
     data: {
       installationId: number;
       issue: Record<string, unknown>;
