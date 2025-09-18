@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import { IssuesList } from '@/components/issues';
+
 import { DashboardLayout, RecentActivity, StatsCard } from './index';
 
 interface DashboardStats {
@@ -45,7 +46,6 @@ interface DashboardHomeProps {
 export const DashboardHome = ({
   organizationId,
   userName,
-  userEmail,
 }: DashboardHomeProps) => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
